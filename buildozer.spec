@@ -37,4 +37,4 @@ android.archs = arm64-v8a,armeabi-v7a
 log_level = 2
 
 # 是否在 root 用户下运行时发出警告（0=不警告，1=警告）
-warn_on_root = 1
+warn_on_root = 0
