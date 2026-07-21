@@ -12,47 +12,26 @@
 
 name: 编译 APK
 
-# 触发条件：推送或 Pull Request 时运行
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
-# 具体要做的事
 jobs:
-  # 任务名称：编译 Android 版本
   build-android:
-    # 在 Ubuntu 最新版上运行（云端自动分配）
     runs-on: ubuntu-latest
 
-    # 按顺序执行的步骤
     steps:
-      # 步骤 1：把仓库代码下载到云服务器
-      - name: 📥 下载代码
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 步骤 2：用 Buildozer 编译 APK
-      # 这个 Action 会在云端自动：
-      #   - 安装 Python 3.x
-      #   - 安装 JDK 17
-      #   - 下载 Android SDK + NDK
-      #   - 安装 Buildozer 和 Kivy
-      #   - 运行 buildozer android debug
       - name: 🔨 编译 APK
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          # buildozer.spec 所在的目录（. 表示项目根目录）
-          workdir: .
-          # 使用 buildozer 稳定版
-          buildozer_version: stable
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            kivy/buildozer:latest \
+            buildozer android debug
 
-      # 步骤 3：把生成的 APK 上传到 GitHub 页面供下载
-      - name: 📤 上传 APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          # 在 GitHub 页面上显示的名称
           name: myapp-apk
-          # APK 文件路径（由上一步 buildozer-action 提供）
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: bin/*.apk
