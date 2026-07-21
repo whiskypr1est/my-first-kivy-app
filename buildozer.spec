@@ -8,8 +8,9 @@ package.domain = com.example
 title = 我的第一个App
 
 # 版本号
+# 版本号（新版 buildozer 需要同时设置 version 和 version.code）
+version = 1.0.0
 version.code = 1
-version.string = 1.0.0
 
 # 入口 Python 文件
 source.dir = .
